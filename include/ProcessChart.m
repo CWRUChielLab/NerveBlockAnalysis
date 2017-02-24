@@ -15,7 +15,10 @@ result.findpeaks_threshold = 500; % voltage threshold in uV for detecting stim o
 
 result.CAPlength = 800; % the length in number of samples of the extracted CAP, 800 samples @ 5 kHz = 160 ms
 result.Bias = 0; % an offset in number of samples for starting CAP extraction relative to detected stim trigger
-%result.Bias = -150; % an offset in number of samples for starting CAP extraction relative to detected stim trigger
+% result.Bias = -150; % an offset in number of samples for starting CAP extraction relative to detected stim trigger
+
+result.artifact_length = 125; % the length in number of samples of the artifact, 125 samples @ 5 kHz = 25 ms
+result.n_artifact_peaks = 2; % the artifact is composed of multiple oscillations of varying height, and only the n tallest will be analyzed
 
 
 %% LOAD INPUT FILE
@@ -34,7 +37,7 @@ assert(any(index_channel_with_stim_trigger), 'No channel found with title ''%s''
 %% EXTRACT BASIC TIMING PARAMETERS
 
 result.duration = range(chart_data(:,index_time)); % in sec
-result.sample_freq = 1/mean(diff(chart_data(:,index_time))); % in Hz -- this is assumed to be the same for all charts
+result.sample_freq = 1/mean(diff(chart_data(:,index_time))); % in Hz
 result.sample_times = (1+result.Bias:result.CAPlength+result.Bias) / result.sample_freq * 1000; % in ms
 fprintf('\tchart duration = %g sec = %g min\n', result.duration, result.duration/60);
 fprintf('\tsample freq    = %g Hz\n', result.sample_freq);
@@ -121,6 +124,32 @@ toc_JPG = toc(tic_JPG);
 % Save the parameter scans
 result.ParaScan = ParaScan_JPG;
 result.ParaScan2 = ParaScan2_JPG;
+
+
+%% MEASURE ARTIFACT
+
+fprintf('measuring artifacts ...\n');
+result.artifact_height     = zeros(result.n_trials, result.n_artifact_peaks);
+result.artifact_location   = zeros(result.n_trials, result.n_artifact_peaks);
+result.artifact_width      = zeros(result.n_trials, result.n_artifact_peaks);
+result.artifact_prominence = zeros(result.n_trials, result.n_artifact_peaks);
+for j = 1 : result.n_trials
+    % locate and measure properties of the n largest peaks in each trial
+    [pks,locs,w,p] = findpeaks( ...
+        result.CAPsignal(j,1:result.artifact_length), ...
+        result.sample_times(1:result.artifact_length), ...
+        'npeaks', result.n_artifact_peaks, ...
+        'sortstr', 'descend' ...
+        );
+    result.artifact_location(j,:)   = locs; % in ms relative to trigger
+    result.artifact_height(j,:)     = pks;  % in uV relative to 0 (actual voltage)
+    result.artifact_prominence(j,:) = p;    % in uV relative to nearby peaks (see findpeaks docs)
+    result.artifact_width(j,:)      = w;    % in ms at half prominence (see findpeaks docs)
+    
+    if mod(j, 1024) == 0
+        fprintf('\t%.f%% complete (%d/%d)\n', 100*j/result.n_trials, j, result.n_trials);
+    end
+end
 
 
 end

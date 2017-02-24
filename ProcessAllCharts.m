@@ -53,12 +53,16 @@ channel_with_stim_trigger = 'dist (V)';
 %% PROCESS DATA
 
 % Initialize arrays to hold data from all charts
-TrialsPerChart      = [];
-TrialTimesAllCharts = [];
-DurationsPerChart   = [];
-CAPsignalAllCharts  = [];
-ParaScanAllCharts   = [];
-ParaScan2AllCharts  = [];
+TrialsPerChart              = [];
+TrialTimesAllCharts         = [];
+DurationsPerChart           = [];
+CAPsignalAllCharts          = [];
+ParaScanAllCharts           = [];
+ParaScan2AllCharts          = [];
+ArtifactHeightAllCharts     = [];
+ArtifactLocationAllCharts   = [];
+ArtifactWidthAllCharts      = [];
+ArtifactProminenceAllCharts = [];
 
 % Process charts one at a time
 for i = 1 : length(charts)
@@ -88,12 +92,16 @@ for i = 1 : length(charts)
     end
     
     fprintf('combining chart results ...\n');
-    TrialsPerChart      = [TrialsPerChart;      result.n_trials];
-    TrialTimesAllCharts = [TrialTimesAllCharts; sum(DurationsPerChart)+result.stim_times];
-    DurationsPerChart   = [DurationsPerChart;   result.duration];
-    CAPsignalAllCharts  = [CAPsignalAllCharts;  result.CAPsignal];
-    ParaScanAllCharts   = [ParaScanAllCharts;   result.ParaScan];
-    ParaScan2AllCharts  = [ParaScan2AllCharts;  result.ParaScan2];
+    TrialsPerChart              = [TrialsPerChart;              result.n_trials];
+    TrialTimesAllCharts         = [TrialTimesAllCharts;         sum(DurationsPerChart)+result.stim_times];
+    DurationsPerChart           = [DurationsPerChart;           result.duration];
+    CAPsignalAllCharts          = [CAPsignalAllCharts;          result.CAPsignal];
+    ParaScanAllCharts           = [ParaScanAllCharts;           result.ParaScan];
+    ParaScan2AllCharts          = [ParaScan2AllCharts;          result.ParaScan2];
+    ArtifactHeightAllCharts     = [ArtifactHeightAllCharts;     result.artifact_height];
+    ArtifactLocationAllCharts   = [ArtifactLocationAllCharts;   result.artifact_location];
+    ArtifactWidthAllCharts      = [ArtifactWidthAllCharts;      result.artifact_width];
+    ArtifactProminenceAllCharts = [ArtifactProminenceAllCharts; result.artifact_prominence];
     
     toc; % print elapsed time since start of timer
     fprintf('\n');
@@ -103,10 +111,18 @@ end
 %% SAVE COMBINED RESULTS
 
 fprintf('Saving combined chart results ...\n');
-SampleFreq = result.sample_freq;   % assuming this is the same for all charts
-SampleTimes = result.sample_times; % assuming this is the same for all charts
-StimFreq = result.stim_freq;       % assuming this is the same for all charts
+ArtifactLength = result.artifact_length;  % assuming this is the same for all charts
+ArtifactNPeaks = result.n_artifact_peaks; % assuming this is the same for all charts
+SampleFreq = result.sample_freq;          % assuming this is the same for all charts
+SampleTimes = result.sample_times;        % assuming this is the same for all charts
+StimFreq = result.stim_freq;              % assuming this is the same for all charts
 save(combined_results_filename, ...
+    'ArtifactHeightAllCharts', ...
+    'ArtifactLength', ...
+    'ArtifactLocationAllCharts', ...
+    'ArtifactNPeaks', ...
+    'ArtifactProminenceAllCharts', ...
+    'ArtifactWidthAllCharts', ...
     'CAPsignalAllCharts', ...
     'DurationsPerChart', ...
     'ParaScanAllCharts', ...

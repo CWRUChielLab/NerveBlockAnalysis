@@ -13,6 +13,7 @@ end
 set(0,'DefaultAxesFontSize', 20);
 % set(0,'DefaultFigureVisible','off');
 
+% gl.SampleTimeRangeForMesh = [-30, 140]; % in ms -- start plot before trigger, only useful if Bias is negative
 % gl.SampleTimeRangeForMesh = [0, 140]; % in ms -- start plot at beginning of artifact
 gl.SampleTimeRangeForMesh = [12, 140]; % in ms -- start plot before small oscillation of artifact
 % gl.SampleTimeRangeForMesh = [24, 140]; % in ms -- start plot after end of artifact
@@ -144,25 +145,26 @@ for i = 1:length(Experiments)
                 'RawVoltage - ' ...
                 ts.id, ' - ' ...
                 'ViewAngle', num2str(va) ...
+                ...' - SmallArtifactsOnlyWithAP1Alignment' ...
                 '.png' ...
                 ];
             
             figure();
             PlotEpisodicVoltageMesh( ...
-                CAPsignalAllCharts, ...                     % m-by-n matrix of voltages, in uV
-                SampleTimes, ...                            % n sample times for x-axis, in ms
-                TrialTimesAllCharts, ...                    % m trial times for y-axis, in sec
-                ts.TrialSkippingFactor, ...                 % y indices downsampling factor
-                gl.SampleTimeRangeForMesh, ...              % x-axis range, in ms
-                eval(ex.TrialTimeRangeForMesh.(ts.id)), ... % y-axis range, in sec
-                ex.VoltageRangeForMesh, ...                 % z-axis range, in uV
-                gl.ColorRangeForMesh, ...                   % color range, in uV
-                ts.DesiredTrialTimeUnits, ...               % y-axis units ("sec", "min", or "hr")
-                ts.TimeMarkers, ...                         % y-axis marker locations, in sec
+                CAPsignalAllCharts, ...                              % m-by-n matrix of voltages, in uV
+                SampleTimes, ...                                     % n sample times for x-axis, in ms
+                TrialTimesAllCharts, ...                             % m trial times for y-axis, in sec
+                ts.TrialSkippingFactor, ...                          % y indices downsampling factor
+                gl.SampleTimeRangeForMesh, ...                       % x-axis range, in ms
+                eval(ex.TrialTimeRangeForMesh.(ts.id)), ...          % y-axis range, in sec
+                ex.VoltageRangeForMesh, ...                          % z-axis range, in uV
+                gl.ColorRangeForMesh, ...                            % color range, in uV
+                ts.DesiredTrialTimeUnits, ...                        % y-axis units ("sec", "min", or "hr")
+                ts.TimeMarkers, ...                                  % y-axis marker locations, in sec
                 ts.TimeMarkersType.(['ViewAngle', num2str(va)]), ... % y-axis marker type ("none", "lines", or "planes")
-                ex.TracesToHighlight.(ts.id), ...           % y indices to highlight
-                va, ...                                     % plot view angle, in degrees
-                PlotTitle ...                               % plot title
+                ex.TracesToHighlight.(ts.id), ...                    % y indices to highlight
+                va, ...                                              % plot view angle, in degrees
+                PlotTitle ...                                        % plot title
                 );
 
             set(gcf, 'Units', 'normalized', 'Position', [0,0,1,1]);
