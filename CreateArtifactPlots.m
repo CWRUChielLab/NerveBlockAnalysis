@@ -80,7 +80,6 @@ for i = 1:length(Experiments)
 
     % Link time axes for panning and zooming
     linkaxes(h, 'x');
-   
     
     % Save plot
     set(gcf, 'Units', 'normalized', 'Position', [0,0,1,1]);
