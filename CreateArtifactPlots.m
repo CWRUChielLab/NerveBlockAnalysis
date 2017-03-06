@@ -9,6 +9,8 @@ if ~exist(dir_exports, 'dir')
     mkdir(dir_exports)
 end
 
+set(0,'DefaultAxesFontSize', 14);
+
 
 %% EXPERIMENT SETTINGS
 
@@ -56,7 +58,7 @@ for i = 1:length(Experiments)
     for i = 1 : ArtifactNPeaks
         
         h(i) = subplot(ArtifactNPeaks, 1, i);
-        plot(TrialTimesAllCharts/3600, ArtifactHeightAllCharts(:, i));
+        plot(TrialTimesAllCharts/3600, ArtifactHeightsAllCharts(:, i), 'o');
         
         if i == 1
             ylabel('Largest artifact osc. height (\muV)');

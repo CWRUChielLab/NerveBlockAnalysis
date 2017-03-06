@@ -10,8 +10,7 @@ result.channel_with_stim_trigger = channel_with_stim_trigger;
 
 result.channel_time = 'Time (s)';
 result.stim_freq = 2; % in Hz
-result.findpeaks_threshold = 500; % voltage threshold in uV for detecting stim on channel_with_stim_trigger
-%result.findpeaks_threshold = 300; % voltage threshold in uV for detecting stim on channel_with_stim_trigger
+result.stim_threshold = 500; % voltage threshold in uV for detecting stim on channel_with_stim_trigger
 
 result.CAPlength = 800; % the length in number of samples of the extracted CAP, 800 samples @ 5 kHz = 160 ms
 result.Bias = 0; % an offset in number of samples for starting CAP extraction relative to detected stim trigger
@@ -49,7 +48,7 @@ fprintf('finding stimulus timing ...\n');
 result.samples_between_stims = result.sample_freq/result.stim_freq; % expected number of samples between each stim
 result.stim_index = FindEpisodes( ...
     chart_data(:,index_channel_with_stim_trigger), ...
-    result.findpeaks_threshold * 1e-6, ... % convert from uV to V
+    result.stim_threshold * 1e-6, ... % convert from uV to V
     result.samples_between_stims * 0.95 ... % slightly less than expected separation to allow for variability in stim timing
     );
 result.stim_times = chart_data(result.stim_index + result.Bias, index_time);
@@ -129,10 +128,10 @@ result.ParaScan2 = ParaScan2_JPG;
 %% MEASURE ARTIFACT
 
 fprintf('measuring artifacts ...\n');
-result.artifact_height     = zeros(result.n_trials, result.n_artifact_peaks);
-result.artifact_location   = zeros(result.n_trials, result.n_artifact_peaks);
-result.artifact_width      = zeros(result.n_trials, result.n_artifact_peaks);
-result.artifact_prominence = zeros(result.n_trials, result.n_artifact_peaks);
+result.artifact_heights     = zeros(result.n_trials, result.n_artifact_peaks);
+result.artifact_times       = zeros(result.n_trials, result.n_artifact_peaks);
+result.artifact_widths      = zeros(result.n_trials, result.n_artifact_peaks);
+result.artifact_prominences = zeros(result.n_trials, result.n_artifact_peaks);
 for j = 1 : result.n_trials
     % locate and measure properties of the n largest peaks in each trial
     [pks,locs,w,p] = findpeaks( ...
@@ -141,10 +140,10 @@ for j = 1 : result.n_trials
         'npeaks', result.n_artifact_peaks, ...
         'sortstr', 'descend' ...
         );
-    result.artifact_location(j,:)   = locs; % in ms relative to trigger
-    result.artifact_height(j,:)     = pks;  % in uV relative to 0 (actual voltage)
-    result.artifact_prominence(j,:) = p;    % in uV relative to nearby peaks (see findpeaks docs)
-    result.artifact_width(j,:)      = w;    % in ms at half prominence (see findpeaks docs)
+    result.artifact_times(j,:)       = locs; % in ms relative to trial start
+    result.artifact_heights(j,:)     = pks;  % in uV relative to 0 (actual voltage)
+    result.artifact_prominences(j,:) = p;    % in uV relative to nearby peaks (see findpeaks docs)
+    result.artifact_widths(j,:)      = w;    % in ms at half prominence (see findpeaks docs)
     
     if mod(j, 1024) == 0
         fprintf('\t%.f%% complete (%d/%d)\n', 100*j/result.n_trials, j, result.n_trials);
