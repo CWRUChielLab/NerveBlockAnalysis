@@ -37,7 +37,7 @@ assert(any(index_channel_with_stim_trigger), 'No channel found with title ''%s''
 
 result.duration = range(chart_data(:,index_time)); % in sec
 result.sample_freq = 1/mean(diff(chart_data(:,index_time))); % in Hz
-result.sample_times = (1+result.Bias:result.CAPlength+result.Bias) / result.sample_freq * 1000; % in ms
+result.sample_times = (result.Bias : result.CAPlength+result.Bias-1) / result.sample_freq * 1000; % in ms
 fprintf('\tchart duration = %g sec = %g min\n', result.duration, result.duration/60);
 fprintf('\tsample freq    = %g Hz\n', result.sample_freq);
 
