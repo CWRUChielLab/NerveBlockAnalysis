@@ -7,9 +7,11 @@ function PlotEpisodicVoltageMesh( ...
     TrialTimeRangeForMesh, ...  % y-axis range, in sec
     VoltageRangeForMesh, ...    % z-axis range, in uV
     ColorRangeForMesh, ...      % color range, in uV
-    DesiredTrialTimeUnits, ...  % y-axis units ("sec", "min", or "hr")
-    TimeMarkers, ...            % y-axis marker locations, in sec
-    TimeMarkersType, ...        % y-axis marker type ("none", "lines", or "planes")
+    DesiredTrialTimeUnits, ...  % y-axis units ('sec', 'min', or 'hr')
+    TrialTimeMarkers, ...       % y-axis marker locations, in sec
+    TrialTimeMarkersType, ...   % y-axis marker type ('none', 'lines', or 'planes')
+    SampleTimeMarkers, ...      % x-axis marker locations, in ms
+    SampleTimeMarkersType, ...  % x-axis marker type ('none', 'lines', or 'planes')
     TracesToHighlight, ...      % y indices to highlight
     ViewAngle, ...              % plot view angle, in degrees
     PlotTitle ...               % plot title
@@ -18,8 +20,8 @@ function PlotEpisodicVoltageMesh( ...
 %   PlotEpisodicVoltageMesh(...) (see source for arguments) plots a mesh,
 %   where each row is an episode and each column is a voltage sample.
 %   Individual episodes can be highlighted, and markers (lines or planes)
-%   can be set to mark specified trial times (e.g., place grid lines every
-%   X time units).
+%   can be set to mark specified trial times or sample times (e.g., place
+%   grid lines every X time units).
 
 
 %% FIND SUBSET OF DATA TO PLOT
@@ -59,7 +61,7 @@ end
 TrialTimes = TrialTimes / TrialTimeConversionFactor;
 TrialTimesForMesh = TrialTimesForMesh / TrialTimeConversionFactor;
 TrialTimeRangeForMesh = TrialTimeRangeForMesh / TrialTimeConversionFactor;
-TimeMarkers = TimeMarkers / TrialTimeConversionFactor;
+TrialTimeMarkers = TrialTimeMarkers / TrialTimeConversionFactor;
 
 
 %% START THE FIGURE
@@ -74,8 +76,8 @@ mesh(SampleTimesForMesh, TrialTimesForMesh, VoltagesForMesh);
 
 %% PLOT Y-AXIS MARKERS
 
-for t = TimeMarkers
-    switch TimeMarkersType
+for t = TrialTimeMarkers
+    switch TrialTimeMarkersType
         case 'none'
             break
         case 'lines'
@@ -95,7 +97,35 @@ for t = TimeMarkers
                 'EdgeColor','w',...
                 'LineStyle','-');
         otherwise
-            error('Unknown TimeMarkersType ''%s''!', TimeMarkersType);
+            error('Unknown TrialTimeMarkersType ''%s''!', TrialTimeMarkersType);
+    end
+end
+
+
+%% PLOT X-AXIS MARKERS
+
+for t = SampleTimeMarkers
+    switch SampleTimeMarkersType
+        case 'none'
+            break
+        case 'lines'
+            x = [t t];
+            y = TrialTimeRangeForMesh;
+            z = [5 5];
+            plot3(x,y,z,...
+                'color','w',...
+                'linewidth',1);
+        case 'planes'
+            x = [t t t t];
+            y = [TrialTimeRangeForMesh flip(TrialTimeRangeForMesh)];
+            z = [-20 -20 0.5 0.5];
+            patch(x,y,z,...
+                'white',...
+                'FaceAlpha',0.5,...
+                'EdgeColor','w',...
+                'LineStyle','-');
+        otherwise
+            error('Unknown SampleTimeMarkersType ''%s''!', SampleTimeMarkersType);
     end
 end
 
