@@ -1,6 +1,7 @@
 clear;
 addpath(genpath('include'));
 
+save_intermediate_chart_results = false;
 skip_charts_previously_processed = false;
 
 %% FILE NAMES
@@ -81,8 +82,10 @@ for i = 1 : length(charts)
     if ~skip_charts_previously_processed || ~exist(output_filename, 'file')
         
         result = ProcessChart(input_filename, channel_to_process, channel_with_stim_trigger);
-        fprintf('saving results ...\n');
-        save(output_filename, 'result');
+        if save_intermediate_chart_results
+            fprintf('saving results ...\n');
+            save(output_filename, 'result');
+        end
         
     else
         
