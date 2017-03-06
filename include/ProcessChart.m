@@ -19,6 +19,9 @@ result.Bias = 0; % an offset in number of samples for starting CAP extraction re
 result.artifact_length = 125; % the length in number of samples of the artifact, 125 samples @ 5 kHz = 25 ms
 result.n_artifact_peaks = 2; % the artifact is composed of multiple oscillations of varying height, and only the n tallest will be analyzed
 
+result.CAP1_window = [25, 60]; % window of time in ms following start of trial within which to look for CAP1
+result.CAP1_threshold = 12; % voltage threshold in uV for detecting CAP1 on channel_to_process
+
 
 %% LOAD INPUT FILE
 
@@ -145,6 +148,42 @@ for j = 1 : result.n_trials
     result.artifact_prominences(j,:) = p;    % in uV relative to nearby peaks (see findpeaks docs)
     result.artifact_widths(j,:)      = w;    % in ms at half prominence (see findpeaks docs)
     
+    if mod(j, 1024) == 0
+        fprintf('\t%.f%% complete (%d/%d)\n', 100*j/result.n_trials, j, result.n_trials);
+    end
+end
+
+
+%% MEASURE CAP1
+
+fprintf('measuring CAP1 ...\n');
+result.CAP1_heights     = zeros(result.n_trials, 1);
+result.CAP1_times       = zeros(result.n_trials, 1);
+result.CAP1_widths      = zeros(result.n_trials, 1);
+result.CAP1_prominences = zeros(result.n_trials, 1);
+CAP1_window_indices = round(result.CAP1_window / 1000 * result.sample_freq) + 1; % convert from ms to samples
+for j = 1 : result.n_trials
+    % locate and measure properties of CAP1 in each trial
+    [pks,locs,w,p] = findpeaks( ...
+        result.CAPsignal(j,CAP1_window_indices(1):CAP1_window_indices(2)), ...
+        result.CAP1_window(1) : 1000/result.sample_freq : result.CAP1_window(2), ...
+        'sortstr', 'descend', ...
+        'npeaks', 1 ...
+        );
+    if pks >= result.CAP1_threshold
+        result.CAP1_times(j)       = locs; % in ms relative to trial start
+        result.CAP1_heights(j)     = pks;  % in uV relative to 0 (actual voltage)
+        result.CAP1_prominences(j) = p;    % in uV relative to nearby peaks (see findpeaks docs)
+        result.CAP1_widths(j)      = w;    % in ms at half prominence (see findpeaks docs)
+    else
+        % the found peak was too small to be considered CAP1 (it probably
+        % didn't actually fire)
+        result.CAP1_times(j)       =  Inf;
+        result.CAP1_heights(j)     = -Inf;
+        result.CAP1_prominences(j) = -Inf;
+        result.CAP1_widths(j)      = 0;
+    end
+
     if mod(j, 1024) == 0
         fprintf('\t%.f%% complete (%d/%d)\n', 100*j/result.n_trials, j, result.n_trials);
     end

@@ -64,6 +64,10 @@ ArtifactHeightsAllCharts     = [];
 ArtifactTimesAllCharts       = [];
 ArtifactWidthsAllCharts      = [];
 ArtifactProminencesAllCharts = [];
+CAP1HeightsAllCharts         = [];
+CAP1TimesAllCharts           = [];
+CAP1WidthsAllCharts          = [];
+CAP1ProminencesAllCharts     = [];
 
 % Process charts one at a time
 for i = 1 : length(charts)
@@ -105,6 +109,10 @@ for i = 1 : length(charts)
     ArtifactTimesAllCharts       = [ArtifactTimesAllCharts;       result.artifact_times];
     ArtifactWidthsAllCharts      = [ArtifactWidthsAllCharts;      result.artifact_widths];
     ArtifactProminencesAllCharts = [ArtifactProminencesAllCharts; result.artifact_prominences];
+    CAP1HeightsAllCharts         = [CAP1HeightsAllCharts;         result.CAP1_heights];
+    CAP1TimesAllCharts           = [CAP1TimesAllCharts;           result.CAP1_times];
+    CAP1WidthsAllCharts          = [CAP1WidthsAllCharts;          result.CAP1_widths];
+    CAP1ProminencesAllCharts     = [CAP1ProminencesAllCharts;     result.CAP1_prominences];
     
     toc; % print elapsed time since start of timer
     fprintf('\n');
@@ -116,6 +124,8 @@ end
 fprintf('Saving combined chart results ...\n');
 ArtifactLength = result.artifact_length;  % assuming this is the same for all charts
 ArtifactNPeaks = result.n_artifact_peaks; % assuming this is the same for all charts
+CAP1Threshold = result.CAP1_threshold;    % assuming this is the same for all charts
+CAP1Window = result.CAP1_window;          % assuming this is the same for all charts
 SampleFreq = result.sample_freq;          % assuming this is the same for all charts
 SampleTimes = result.sample_times;        % assuming this is the same for all charts
 StimFreq = result.stim_freq;              % assuming this is the same for all charts
@@ -127,6 +137,12 @@ save(combined_results_filename, ...
     'ArtifactTimesAllCharts', ...
     'ArtifactWidthsAllCharts', ...
     'CAPsignalAllCharts', ...
+    'CAP1HeightsAllCharts', ...
+    'CAP1ProminencesAllCharts', ...
+    'CAP1Threshold', ...
+    'CAP1TimesAllCharts', ...
+    'CAP1WidthsAllCharts', ...
+    'CAP1Window', ...
     'DurationsPerChart', ...
     'ParaScanAllCharts', ...
     'ParaScan2AllCharts', ...
