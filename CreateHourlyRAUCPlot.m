@@ -1,13 +1,15 @@
 close all;
 clear;
 
-%% Analysis Parameters
+
+%% PARAMETERS
 
 sample_index_before_artifact_peak = 60;
 sample_index_during_artifact_trough = 120;
 sample_index_for_RAUC = sample_index_during_artifact_trough;
 
-%% Analyze Electrical + Laser Experiment
+
+%% ELECTRICAL + LASER EXPERIMENT WITH LASER OFF
 
 load('data/hl_201605027/AllChartsProcessed.mat');
 
@@ -124,7 +126,8 @@ ElectricalAndLaserHourlyRAUCSE = [ ...
     hour9_RAUC_se ...
     ] / normalization_factor; % normalize by initial RAUC
 
-%% Analyze Electrical Only Experiment
+
+%% ELECTRICAL ONLY EXPERIMENT
 
 load('data/10.11.2016/AllChartsProcessed.mat');
 
@@ -234,7 +237,8 @@ ElectricalOnlyHourlyRAUCSE = [ ...
     hour9_RAUC_se ...
     ] / normalization_factor; % normalize by initial RAUC
 
-%% Plot
+
+%% CREATE PLOT
 
 set(0,'defaultAxesFontSize', 20);
 hf1 = figure;
