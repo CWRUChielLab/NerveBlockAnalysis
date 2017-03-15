@@ -6,11 +6,11 @@
 git clone https://github.com/CWRUChielLab/NerveBlockAnalysis.git
 cd NerveBlockAnalysis
 git submodule update --init
-mkdir -p data/hl_201605027
-mkdir -p data/10.11.2016
+mkdir data/hl_201605027
+mkdir data/10.11.2016
 ```
 
-Copy the AxoGraph data into the `data` directories. See [ProcessAllCharts.m](ProcessAllCharts.m) for a list of the needed data files.
+Copy the AxoGraph data into the `data` subdirectories. See [ProcessAllCharts.m](ProcessAllCharts.m) for a list of the needed data files.
 
 If you need to use SSH for write privileges, use the following to fix your remote URLS.
 ```
