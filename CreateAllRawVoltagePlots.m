@@ -20,6 +20,8 @@ gl.SampleTimeRangeForMesh = [12, 140]; % in ms -- start plot before small oscill
 
 gl.ColorRangeForMesh = [-10 30]; % in uV -- voltages outside this range will saturate
 
+highlight_CAP1_peak = false; % mark the location of the peak of CAP1 with a white line
+
 
 %% EXPERIMENT SETTINGS
 
@@ -183,26 +185,28 @@ for i = 1:length(Experiments)
                 PlotTitle ...                                          % plot title
                 );
             
-%             % depending on the desired y-axis units for the plot, determine
-%             % a time conversion factor
-%             switch ts.DesiredTrialTimeUnits
-%                 case 'sec'
-%                     % units are already in sec
-%                     TrialTimeConversionFactor = 1;
-%                 case 'min'
-%                     TrialTimeConversionFactor = 60;
-%                 case 'hr'
-%                     TrialTimeConversionFactor = 3600;
-%                 otherwise
-%                     error('Unknown DesiredTrialTimeUnits ''%s''!', ts.DesiredTrialTimeUnits);
-%             end
-%             plot3(...
-%                 CAP1TimesAllCharts, ...
-%                 TrialTimesAllCharts / TrialTimeConversionFactor, ...
-%                 CAP1HeightsAllCharts, ...
-%                 'color', 'w', ...
-%                 'linewidth', 2 ...
-%                 );
+            if highlight_CAP1_peak
+                % depending on the desired y-axis units for the plot, determine
+                % a time conversion factor
+                switch ts.DesiredTrialTimeUnits
+                    case 'sec'
+                        % units are already in sec
+                        TrialTimeConversionFactor = 1;
+                    case 'min'
+                        TrialTimeConversionFactor = 60;
+                    case 'hr'
+                        TrialTimeConversionFactor = 3600;
+                    otherwise
+                        error('Unknown DesiredTrialTimeUnits ''%s''!', ts.DesiredTrialTimeUnits);
+                end
+                plot3(...
+                    CAP1TimesAllCharts, ...
+                    TrialTimesAllCharts / TrialTimeConversionFactor, ...
+                    CAP1HeightsAllCharts, ...
+                    'color', 'w', ...
+                    'linewidth', 2 ...
+                    );
+            end
 
             set(gcf, 'Units', 'normalized', 'Position', [0,0,1,1]);
             hgexport(gcf, FigureFileName, hgexport('factorystyle'), 'Format', 'png');
