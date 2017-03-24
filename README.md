@@ -6,7 +6,7 @@
 git clone https://github.com/CWRUChielLab/OpticalBlockAnalysis.git
 cd OpticalBlockAnalysis
 git submodule update --init
-mkdir data/{10.11.2016,hl_201605017,hl_201605027,hl_201605031}
+mkdir data/{10.11.2016,hl_20160429,hl_201605017,hl_201605027,hl_201605031}
 ```
 
 Copy the AxoGraph data into the `data` subdirectories. See [ProcessAllCharts.m](ProcessAllCharts.m) for a list of the needed data files.
