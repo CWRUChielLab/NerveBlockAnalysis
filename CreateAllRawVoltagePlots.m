@@ -13,11 +13,6 @@ end
 set(0,'DefaultAxesFontSize', 20);
 % set(0,'DefaultFigureVisible','off');
 
-% gl.SampleTimeRangeForMesh = [-30, 140]; % in ms -- start plot before trigger, only useful if Bias is negative
-% gl.SampleTimeRangeForMesh = [0, 140]; % in ms -- start plot at beginning of artifact
-gl.SampleTimeRangeForMesh = [12, 140]; % in ms -- start plot before small oscillation of artifact
-% gl.SampleTimeRangeForMesh = [24, 140]; % in ms -- start plot after end of artifact
-
 highlight_CAP1_peak = false; % mark the location of the peak of CAP1 with a white line
 
 
@@ -32,6 +27,7 @@ Experiments = { ...
         'data',  'data/hl_201605027/AllChartsProcessed.mat', ...
         'VoltageRangeForMesh', [-30 45], ... % in uV
         'ColorRangeForMesh',   [-10 30], ... % in uV -- voltages outside this range will saturate
+        'SampleTimeRangeForMesh', [12, 140], ... % in ms
         'TrialTimeRangeForMesh', struct( ...
             'Hours1to2',      '[0 sum(DurationsPerChart(1:2))]', ... % in sec -- first 2 charts = 2 hr  1 min 35 sec
             'FullExperiment', '[0 sum(DurationsPerChart)]' ...       % in sec -- all charts     = 9 hr 10 min 10 sec
@@ -57,6 +53,7 @@ Experiments = { ...
         'data',  'data/10.11.2016/AllChartsProcessed.mat', ...
         'VoltageRangeForMesh', [-75 75], ... % in uV
         'ColorRangeForMesh',   [-10 30], ... % in uV -- voltages outside this range will saturate
+        'SampleTimeRangeForMesh', [12, 140], ... % in ms
         'TrialTimeRangeForMesh', struct( ...
             'Hours1to2',      '[0 DurationsPerChart(1)]', ...  % in sec -- first chart = 2 hr  1 min 27 sec
             'FullExperiment', '[0 sum(DurationsPerChart)]' ... % in sec -- all charts  = 9 hr 20 min 43 sec
@@ -82,6 +79,7 @@ Experiments = { ...
         'data',  'data/hl_201605031/AllChartsProcessed.mat', ...
         'VoltageRangeForMesh', [-50 50], ... % in uV
         'ColorRangeForMesh',   [-10 25], ... % in uV -- voltages outside this range will saturate
+        'SampleTimeRangeForMesh', [12, 140], ... % in ms
         'TrialTimeRangeForMesh', struct( ...
             'Hours1to2',      '[0 sum(DurationsPerChart(1:2))]', ... % in sec -- first 2 charts = 2 hr 18 min 11 sec
             'FullExperiment', '[0 sum(DurationsPerChart)]' ...       % in sec -- all charts     = 8 hr 33 min 33 sec
@@ -103,6 +101,7 @@ Experiments = { ...
         'data',  'data/hl_201605017/AllChartsProcessed.mat', ...
         'VoltageRangeForMesh', [-30 20], ... % in uV
         'ColorRangeForMesh',   [ -5 15], ... % in uV -- voltages outside this range will saturate
+        'SampleTimeRangeForMesh', [12, 140], ... % in ms
         'TrialTimeRangeForMesh', struct( ...
             'Hours1to2',      '[0 sum(DurationsPerChart(1:2))]', ... % in sec -- first 2 charts = 2 hr  1 min 15 sec
             'FullExperiment', '[0 sum(DurationsPerChart)]' ...       % in sec -- all charts     = 7 hr 11 min 44 sec
@@ -211,7 +210,7 @@ for i = 1:length(Experiments)
                 SampleTimes, ...                                       % n sample times for x-axis, in ms
                 TrialTimesAllCharts, ...                               % m trial times for y-axis, in sec
                 ts.TrialSkippingFactor, ...                            % y indices downsampling factor
-                gl.SampleTimeRangeForMesh, ...                         % x-axis range, in ms
+                ex.SampleTimeRangeForMesh, ...                         % x-axis range, in ms
                 eval(ex.TrialTimeRangeForMesh.(ts.id)), ...            % y-axis range, in sec
                 ex.VoltageRangeForMesh, ...                            % z-axis range, in uV
                 ex.ColorRangeForMesh, ...                              % color range, in uV
